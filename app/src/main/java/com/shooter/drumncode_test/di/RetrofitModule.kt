@@ -15,19 +15,16 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object RetrofitModule {
     @Provides
-    fun provideBaseUrl() = Const.BASE_URL
-
-    @Provides
     @Singleton
-    fun provideOkHttpClient() = OkHttpClient
+    fun provideOkHttpClient(): OkHttpClient = OkHttpClient
         .Builder()
         .build()
 
     @Provides
     @Singleton
-    fun provideRetrofit(okHttpClient: OkHttpClient, BASE_URL: String): Retrofit = Retrofit.Builder()
+    fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit = Retrofit.Builder()
         .addConverterFactory(GsonConverterFactory.create())
-        .baseUrl(BASE_URL)
+        .baseUrl(Const.BASE_URL)
         .client(okHttpClient)
         .build()
 

@@ -11,14 +11,14 @@ data class EventModelAPI(
     @SerializedName("d")
     val eventName: String? = null,
     @SerializedName("tt")
-    val startTime: String? = null
+    val startTime: Long? = null
 )
 
 fun EventModelAPI.toUI() = EventModelUI(
     eventId = this.eventId ?: "",
     sportId = this.sportId ?: "",
     eventName = this.eventName ?: "",
-    startTime = this.startTime ?: ""
+    startTime = this.startTime ?: 0L
 )
 
 fun List<EventModelAPI>.toUI() = this.map { it.toUI() }

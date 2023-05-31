@@ -6,7 +6,7 @@ data class EventModelUI(
     val eventId: String,
     val sportId: String,
     val eventName: String,
-    val startTime: String
+    val startTime: Long
 )
 
 fun EventModelUI.toDB() = EventModelDB(
