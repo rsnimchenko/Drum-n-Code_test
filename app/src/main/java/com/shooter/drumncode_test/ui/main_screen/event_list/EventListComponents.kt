@@ -10,8 +10,8 @@ import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -25,8 +25,6 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.shooter.drumncode_test.R
 import com.shooter.drumncode_test.domain.model_ui.EventModelUI
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import java.time.Duration
 import java.time.Instant
 import kotlin.math.abs
@@ -35,6 +33,7 @@ import kotlin.math.abs
 fun EventComponent(
     eventModelUI: EventModelUI,
     isActive: Boolean,
+    currentTime: State<Long>,
     addEventToDb: (EventModelUI) -> Unit,
     deleteEventFromDb: (EventModelUI) -> Unit
 ) {
@@ -49,7 +48,8 @@ fun EventComponent(
     ) {
         TimeEvent(
             startTime = eventModelUI.startTime,
-            itemWidthDp = itemWidthDp
+            itemWidthDp = itemWidthDp,
+            currentTime = currentTime.value
         )
         StarIcon(isActive = isActive)
         EventName(
@@ -62,37 +62,24 @@ fun EventComponent(
 @Composable
 fun TimeEvent(
     startTime: Long,
+    currentTime: Long,
     itemWidthDp: MutableState<Dp>,
     modifier: Modifier = Modifier
 ) {
-    val timeLabel = remember {
-        mutableStateOf("")
-    }
-    LaunchedEffect(key1 = Unit) {
-        launch {
-            while (true) {
-                val currentTime = System.currentTimeMillis()
-                val duration = Duration.between(Instant.ofEpochSecond(startTime), Instant.ofEpochMilli(currentTime))
+    val duration = Duration.between(Instant.ofEpochSecond(startTime), Instant.ofEpochMilli(currentTime))
 
-                val seconds = duration.seconds
-                val absSeconds = abs(seconds)
-                val positive = String.format(
-                    "%d:%02d:%02d",
-                    absSeconds / 3600,
-                    absSeconds % 3600 / 60,
-                    absSeconds % 60
-                )
-                timeLabel.value = if (seconds > 0) "-$positive" else positive
-                delay(1000L)
-            }
-
-        }
-
-    }
+    val seconds = duration.seconds
+    val absSeconds = abs(seconds)
+    val positive = String.format(
+        "%d:%02d:%02d",
+        absSeconds / 3600,
+        absSeconds % 3600 / 60,
+        absSeconds % 60
+    )
     val localDensity = LocalDensity.current
 
     Text(
-        text = timeLabel.value,
+        text = if (seconds > 0) "-$positive" else positive,
         color = MaterialTheme.colors.onBackground,
         style = MaterialTheme.typography.body1,
         modifier = modifier

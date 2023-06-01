@@ -15,6 +15,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 fun MainScreen(
     vm: MainScreenViewModel = hiltViewModel()
 ) {
+    val currentTime = vm.currentTime.collectAsState()
     val sportsList = vm.sportsState.collectAsState()
     Box(
         modifier = Modifier
@@ -25,7 +26,10 @@ fun MainScreen(
             modifier = Modifier.fillMaxSize(),
         ) {
             items(items = sportsList.value) {
-                SportLabelWithEvents(sport = it)
+                SportLabelWithEvents(
+                    sport = it,
+                    currentTime = currentTime
+                )
             }
         }
     }

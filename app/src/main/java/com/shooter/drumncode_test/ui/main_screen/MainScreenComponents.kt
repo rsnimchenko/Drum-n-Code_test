@@ -13,6 +13,7 @@ import androidx.compose.material.Text
 import androidx.compose.material.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -26,14 +27,18 @@ import com.shooter.drumncode_test.ui.main_screen.event_list.EventList
 
 @Composable
 fun SportLabelWithEvents(
-    sport: SportModelUI
+    sport: SportModelUI,
+    currentTime: State<Long>,
 ) {
     val isOpen = remember { mutableStateOf(false) }
 
     Column(modifier = Modifier.fillMaxWidth()) {
         EachSportLabel(sport = sport, isOpen = isOpen)
         if(isOpen.value)
-            EventList(sportModelUI = sport)
+            EventList(
+                sportModelUI = sport,
+                currentTime = currentTime
+            )
     }
 }
 
